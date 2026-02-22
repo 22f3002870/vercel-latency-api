@@ -27,7 +27,7 @@ async def get_latency(request: Request):
     regions = body.get("regions", [])
     threshold = body.get("threshold_ms", 0)
 
-    result = {}
+    regions_output = []
 
     for region in regions:
         records = [r for r in data if r["region"] == region]
@@ -38,15 +38,16 @@ async def get_latency(request: Request):
         latencies = [r["latency_ms"] for r in records]
         uptimes = [r["uptime_pct"] for r in records]
 
-        result[region] = {
+        regions_output.append({
+            "region": region,
             "avg_latency": round(float(np.mean(latencies)), 2),
             "p95_latency": round(float(np.percentile(latencies, 95)), 2),
             "avg_uptime": round(float(np.mean(uptimes)), 2),
             "breaches": sum(1 for r in records if r["latency_ms"] > threshold)
-        }
+        })
 
     return JSONResponse(
-        content=result,
+        content={"regions": regions_output},
         headers={"Access-Control-Allow-Origin": "*"}
     )
 
