@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import json
 import numpy as np
 import os
+from mangum import Mangum
 
 app = FastAPI()
 
@@ -41,3 +42,5 @@ async def get_latency(request: Request):
         }
 
     return result
+
+handler = Mangum(app)
