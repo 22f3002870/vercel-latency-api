@@ -16,7 +16,7 @@ app.add_middleware(
 with open(os.path.join(os.path.dirname(__file__), "../data.json")) as f:
     data = json.load(f)
 
-@app.post("/api/latency")
+@app.post("/")
 async def get_latency(request: Request):
     body = await request.json()
     regions = body.get("regions", [])
